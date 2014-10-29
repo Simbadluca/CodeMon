@@ -57,6 +57,18 @@ Flask:
 [Flask quick start](http://flask.pocoo.org/docs/0.10/quickstart/#quickstart)
 
 
+###Install RabbitMQ
+
+	brew install rabbitmq
+	rabbitmq-plugins enable rabbitmq_management
+	
+To run RabbitMQ
+
+	sudo rabbitmq-server
+	
+[RabbitMQ man](http://www.rabbitmq.com/man/rabbitmqctl.1.man.html)
+
+
 ###If we cant unit-tests
 
     pip install nose
