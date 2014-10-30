@@ -69,6 +69,10 @@ To run RabbitMQ
 
 	sudo rabbitmq-server
 	
+Install Pika to interact with RabbitMQ through python
+
+	pip install pika
+	
 [RabbitMQ man](http://www.rabbitmq.com/man/rabbitmqctl.1.man.html)
 
 ###Install Kodemon
