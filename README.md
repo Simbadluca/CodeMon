@@ -1,6 +1,9 @@
 CodeMon
 =======
 
+[Assignment](https://github.com/reykjavik-university/2014-T-514-VEFT/blob/master/Week12/project3.md)
+
+
 ##Installation guid for Mac:
 
 Installing homebrew:
@@ -67,6 +70,10 @@ To run RabbitMQ
 	sudo rabbitmq-server
 	
 [RabbitMQ man](http://www.rabbitmq.com/man/rabbitmqctl.1.man.html)
+
+###Install Kodemon
+
+	pip install git+https://github.com/hlysig/kodemon-python
 
 
 ###If we cant unit-tests
