@@ -1,8 +1,5 @@
 import socket
-import json
-
-from data.models import Kodemon
-from data.database import Session
+import pika
 
 """
 Before the server is started for the first time after reset this
@@ -19,29 +16,18 @@ UDPSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 listen_addr = ("localhost", 4000)
 UDPSock.bind(listen_addr)
 
-# Set up database connection
-session = Session()
-
+# Set up connection to RabbitMQ
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+channel.queue_declare(queue='Kodemon')
 
 print "=== Server Stared ==="
 while True:
     data, addr = UDPSock.recvfrom(1024)
 
-    # Format data to Json
-    jData = json.loads(data)
+    channel.basic_publish(exchange='',
+                      routing_key='Kodemon',
+                      body=data)
+    print " [x] Sent message"
 
 
-    # Makes the path stored in key relevant to "CodeMon"
-    shortKey = jData["key"]
-    shortKey = shortKey[shortKey.rfind("CodeMon") - 1:]
-
-    # Create an object that will be put in the db
-    kodemonData = Kodemon(execution_time = jData["execution_time"],
-                          timestamp = jData["timestamp"],
-                          token = jData["token"],
-                          key = shortKey,
-                          func_name = jData["func_name"],
-                          filename = jData["filename"])
-
-    session.add(kodemonData)
-    session.commit()
