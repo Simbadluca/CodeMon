@@ -9,6 +9,8 @@ class Kodemon(Base):
     timestamp = Column(BigInteger, nullable=False)
     token = Column(String, nullable=False)
     key = Column(String, nullable=False)
+    func_name = Column(String, nullable=True)
+    filename = Column(String, nullable=True)
 
     def __str__(self):
         # God fucking dam it, look a this mess...
@@ -22,6 +24,10 @@ class Kodemon(Base):
         text += self.token
         text += "', 'key': '"
         text += self.key
+        text += "', 'func_name': '"
+        text += self.func_name
+        text += "', 'filename': '"
+        text += self.filename
         text += "' }"
 
         return text

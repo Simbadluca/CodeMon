@@ -30,18 +30,18 @@ while True:
     # Format data to Json
     jData = json.loads(data)
 
+
+    # Makes the path stored in key relevant to "CodeMon"
+    shortKey = jData["key"]
+    shortKey = shortKey[shortKey.rfind("CodeMon") - 1:]
+
     # Create an object that will be put in the db
     kodemonData = Kodemon(execution_time = jData["execution_time"],
                           timestamp = jData["timestamp"],
                           token = jData["token"],
-                          key = jData["key"])
+                          key = shortKey,
+                          func_name = jData["func_name"],
+                          filename = jData["filename"])
 
     session.add(kodemonData)
     session.commit()
-
-"""
-    print "Execution time:", jData["execution_time"]
-    print "Timestamp: \t", jData["timestamp"]
-    print "Token: \t\t", jData["token"]
-    print "Key: \t\t", jData["key"], "\n"
-"""
