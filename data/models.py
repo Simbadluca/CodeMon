@@ -9,3 +9,19 @@ class Kodemon(Base):
     timestamp = Column(BigInteger, nullable=False)
     token = Column(String, nullable=False)
     key = Column(String, nullable=False)
+
+    def __str__(self):
+        # God fucking dam it, look a this mess...
+        text = "{ 'id': '"
+        text += str(self.id)
+        text += "', 'execution_time': '"
+        text += str(self.execution_time)
+        text += "', 'timestamp': '"
+        text += str(self.timestamp)
+        text += "', 'token': '"
+        text += self.token
+        text += "', 'key': '"
+        text += self.key
+        text += "' }"
+
+        return text

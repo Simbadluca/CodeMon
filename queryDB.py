@@ -10,8 +10,11 @@ if __name__ == "__main__":
     print "Printing Database content:\n"
 
     for elem in kodemonData:
+        print elem.__str__()
+        """
         print elem.id
         print elem.execution_time
         print elem.timestamp
         print elem.token
         print elem.key, "\n"
+        """

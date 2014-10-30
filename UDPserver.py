@@ -5,7 +5,7 @@ from data.models import Kodemon
 from data.database import Session
 
 """
-Before the server is started for the first the this
+Before the server is started for the first time after reset this
 command needs to be executed in python with the virtualenv
 enabled:
 
@@ -39,7 +39,9 @@ while True:
     session.add(kodemonData)
     session.commit()
 
+"""
     print "Execution time:", jData["execution_time"]
     print "Timestamp: \t", jData["timestamp"]
     print "Token: \t\t", jData["token"]
     print "Key: \t\t", jData["key"], "\n"
+"""
