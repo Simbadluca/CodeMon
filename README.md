@@ -65,9 +65,13 @@ Flask:
 	brew install rabbitmq
 	rabbitmq-plugins enable rabbitmq_management
 	
+RabbitMQ needs to be added to path:
+
+	PATH=$PATH:/usr/local/sbin
+	
 To run RabbitMQ
 
-	sudo rabbitmq-server
+	rabbitmq-server
 	
 Install Pika to interact with RabbitMQ through python
 
