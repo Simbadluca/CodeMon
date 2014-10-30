@@ -1,7 +1,7 @@
 CodeMon
 =======
 
-[Assignment](https://github.com/reykjavik-university/2014-T-514-VEFT/blob/master/Week12/project3.md)
+[Assignment 3](https://github.com/reykjavik-university/2014-T-514-VEFT/blob/master/Week12/project3.md)
 
 
 ##Installation guid for Mac:
