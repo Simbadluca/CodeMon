@@ -1,3 +1,9 @@
+#Pycharm
+.idea/
+
+#OSX System
+.DS_Store
+
 # Virtual environment
 .venv/
 
