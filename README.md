@@ -88,6 +88,18 @@ Install Pika to interact with RabbitMQ through python
 
 [Elastisearch download](http://www.elasticsearch.org/overview/elkdownloads/)
 
+Extract file to a desired location.
+Navigate to elasticsearch/conf/elasticsearch.yaml
+Set the name of the cluster and remove the comment:
+	
+	cluster.name: kodemon
+	
+Set the name of the node and remove the comment:
+	
+	node.name: "functions"
+	
+	pip install elasticsearch
+
 ###If we cant unit-tests
 
     pip install nose
