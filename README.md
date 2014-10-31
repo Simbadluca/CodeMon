@@ -84,6 +84,10 @@ Install Pika to interact with RabbitMQ through python
 	pip install git+https://github.com/hlysig/kodemon-python
 
 
+###Install Elasticsearch
+
+	[Elastisearch download](http://www.elasticsearch.org/overview/elkdownloads/)
+
 ###If we cant unit-tests
 
     pip install nose
