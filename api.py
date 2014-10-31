@@ -56,21 +56,24 @@ def formatElasticResponce(responce):
 
     return result
 
-def formatTime(arg):
+# Checks if argument is epoch or datetime format and converts to
+# epoch if the format is datetime.
+# returns 400 if the format is wrong
+def formatTime(aTimeFormat):
 
     try:
-        int(arg)
+        int(aTimeFormat)
     except ValueError:
         try:
             timePatter = "%Y-%m-%d-%H:%M:%S"
-            arg = time.mktime(time.strptime(arg, timePatter))
-            arg = str(int(arg))
+            aTimeFormat = time.mktime(time.strptime(aTimeFormat, timePatter))
+            aTimeFormat = str(int(aTimeFormat))
         except:
             return abort(400, "Error in date format. Format should be: 1337-13-37-13:37:00")
 
-        return arg
+        return aTimeFormat
     else:
-        return arg
+        return aTimeFormat
 
 
 """
