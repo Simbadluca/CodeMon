@@ -14,20 +14,20 @@ class Kodemon(Base):
 
     def __str__(self):
         # God fucking dam it, look a this mess...
-        text = "{ 'id': '"
+        text = '{ "id": "'
         text += str(self.id)
-        text += "', 'execution_time': '"
+        text += '", "execution_time": "'
         text += str(self.execution_time)
-        text += "', 'timestamp': '"
+        text += '", "timestamp": "'
         text += str(self.timestamp)
-        text += "', 'token': '"
+        text += '", "token": "'
         text += self.token
-        text += "', 'key': '"
+        text += '", "key": "'
         text += self.key
-        text += "', 'func_name': '"
+        text += '", "func_name": "'
         text += self.func_name
-        text += "', 'filename': '"
+        text += '", "filename": "'
         text += self.filename
-        text += "' }"
+        text += '" }'
 
         return text
