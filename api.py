@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, abort
 
 from data.database import Session
 from data.models import Kodemon
@@ -66,7 +66,7 @@ def getAllEntryes():
     foundKodemon = session.query(Kodemon).all()
 
     if not foundKodemon:
-        return "No entry found", 404
+        return abort(404)
     else:
         jsonResponce = formatResponce(foundKodemon)
 
@@ -80,7 +80,7 @@ def getFuncByName(func_name):
     foundKodemon = session.query(Kodemon).filter(Kodemon.func_name == func_name).all()
 
     if not foundKodemon:
-        return "No entry found", 404
+        return abort(404)
     else:
         jsonResponce = formatResponce(foundKodemon)
 
@@ -94,7 +94,7 @@ def getFuncByFilename(filename):
     foundKodemon = session.query(Kodemon).filter(Kodemon.filename == filename).all()
 
     if not foundKodemon:
-        return "No entry found", 404
+        return abort(404)
     else:
         jsonResponce = formatResponce(foundKodemon)
 
@@ -108,7 +108,7 @@ def getFuncByFileAndFuncName(filename, func_name):
     foundKodemon = session.query(Kodemon).filter(Kodemon.func_name == func_name and Kodemon.filename == filename).all()
 
     if not foundKodemon:
-        return "No entry found", 404
+        return abort(404)
     else:
         jsonResponce = formatResponce(foundKodemon)
 
@@ -123,9 +123,12 @@ def getAllEntryesElastic():
 
     res = es.search(index="kodemon", body={"query": {"match_all": {}}})
 
-    responce = formatElasticResponce(res)
+    if res['hits']['total'] > 0:
+        responce = formatElasticResponce(res)
 
-    return responce
+        return responce
+    else:
+        abort(404)
 
 
 # Get all entries in data base filtered by function name
@@ -141,12 +144,46 @@ def getFuncByNameElastic(func_name):
                         }
                     }
                 })
-    responce = formatElasticResponce(res)
 
-    return responce
+    if res['hits']['total'] > 0:
+        responce = formatElasticResponce(res)
+
+        return responce
+    else:
+        abort(404)
 
 # Get all entries in database filtered by filename
 # Get all entries in database filtered by file and function name
+
+# Get all entries for a function in a given time range
+@app.route("/kodemon/elastic/function/<func_name>/<time_min>-<time_max>")
+def getFunctionByNameAndTimeRangeElastic(func_name, time_min, time_max):
+
+    res = es.search(index="kodemon",
+                body={
+                    "query" : {
+                        "range" : {
+                            "timestamp" : {
+                                "from" : time_min,
+                                "to" : time_max
+                            }
+                        }
+                    },
+                    "query": {
+                        "query_string": {
+                            "query": func_name,
+                            "default_field": "func_name"
+                        }
+                    }
+                })
+
+    if res['hits']['total'] > 0:
+        responce = formatElasticResponce(res)
+
+        return responce
+    else:
+        abort(404)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
