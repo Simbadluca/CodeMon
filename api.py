@@ -1,3 +1,4 @@
+import time
 from flask import Flask, abort
 
 from data.database import Session
@@ -54,6 +55,22 @@ def formatElasticResponce(responce):
     result += ' ]}'
 
     return result
+
+def formatTime(arg):
+
+    try:
+        int(arg)
+    except ValueError:
+        try:
+            timePatter = "%Y-%m-%d-%H:%M:%S"
+            arg = time.mktime(time.strptime(arg, timePatter))
+            arg = str(int(arg))
+        except:
+            return abort(400, "Error in date format. Format should be: 1337-13-37-13:37:00")
+
+        return arg
+    else:
+        return arg
 
 
 """
@@ -155,9 +172,13 @@ def getFuncByNameElastic(func_name):
 # Get all entries in database filtered by filename
 # Get all entries in database filtered by file and function name
 
+# Time format: "2011.08.29-11:05:02"
 # Get all entries for a function in a given time range
-@app.route("/kodemon/elastic/function/<func_name>/<time_min>-<time_max>")
+@app.route("/kodemon/elastic/function/<func_name>/<time_min>_<time_max>")
 def getFunctionByNameAndTimeRangeElastic(func_name, time_min, time_max):
+
+    time_min = formatTime(time_min)
+    time_max = formatTime(time_max)
 
     res = es.search(index="kodemon",
                 body={
