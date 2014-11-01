@@ -32,8 +32,9 @@
                 </ul>
               </div>
             </div>
+            <h1>{% block title %}{% endblock %}</h1>
 
-            {% block content %}{% endblock %}
+            <div class="row">{% block content %}{% endblock %}</div>
 
 
             <footer>
