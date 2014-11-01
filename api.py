@@ -65,8 +65,8 @@ def formatTime(aTimeFormat):
         int(aTimeFormat)
     except ValueError:
         try:
-            timePatter = "%Y-%m-%d-%H:%M:%S"
-            aTimeFormat = time.mktime(time.strptime(aTimeFormat, timePatter))
+            timePattern = "%Y-%m-%d-%H:%M:%S"
+            aTimeFormat = time.mktime(time.strptime(aTimeFormat, timePattern))
             aTimeFormat = str(int(aTimeFormat))
         except:
             return abort(400, "Error in date format. Format should be: 1337-13-37-13:37:00")
