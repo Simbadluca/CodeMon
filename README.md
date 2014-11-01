@@ -65,9 +65,17 @@ Flask:
 	brew install rabbitmq
 	rabbitmq-plugins enable rabbitmq_management
 	
+RabbitMQ needs to be added to path:
+
+	PATH=$PATH:/usr/local/sbin
+	
 To run RabbitMQ
 
-	sudo rabbitmq-server
+	rabbitmq-server
+	
+Install Pika to interact with RabbitMQ through python
+
+	pip install pika
 	
 [RabbitMQ man](http://www.rabbitmq.com/man/rabbitmqctl.1.man.html)
 
@@ -75,6 +83,22 @@ To run RabbitMQ
 
 	pip install git+https://github.com/hlysig/kodemon-python
 
+
+###Install Elasticsearch
+
+[Elastisearch download](http://www.elasticsearch.org/overview/elkdownloads/)
+
+Extract file to a desired location.
+Navigate to elasticsearch/conf/elasticsearch.yaml
+Set the name of the cluster and remove the comment:
+	
+	cluster.name: kodemon
+	
+Set the name of the node and remove the comment:
+	
+	node.name: "functions"
+	
+	pip install elasticsearch
 
 ###If we cant unit-tests
 
