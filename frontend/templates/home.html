@@ -1,11 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<title>Code monitoring web of the ages</title>
-        <link rel="stylesheet" type="text/css" href=" {{ url_for('static', filename='bootstrap.css') }}">
-	</head>
-	<body>
-        <h3 class="btn btn-lg btn-default">{{welcome}}</h3>
-	</body>
-</html>
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+  <h1>Index</h1>
+  <p class="important">
+    Welcome on my awesome homepage.
+{% endblock %}
