@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}List of functions{% endblock %}
+{% block content %}
+    <div class="col-md-3">
+        <ul class="list-group">
+            {% for dict in list %}
+                <li class="list-group-item">
+                    <a href="/functions/{{ dict['func_name'] }}">
+                        {{ dict['func_name'] }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

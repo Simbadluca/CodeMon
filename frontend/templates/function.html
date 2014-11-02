@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}Function details - ({{ data['func_name'] }}){% endblock %}
+{% block content %}
+    <div class="col-md-12">
+        {% for key in data %}
+            <div class="col-lg-4 col-md-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ key }}</h3>
+                    </div>
+                    <div class="panel-body">{{ data[key] }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
