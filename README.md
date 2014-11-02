@@ -114,7 +114,7 @@ It is wise to have one terminal window open for each component.
 First navigate to the project directory (/CodeMon/)
 
 * ##RabbitMQ
-  * >PATH=$PATH:(user/local/sbin
+  * >PATH=$PATH:/user/local/sbin
   * >rabbitmq-server
 
 * ##UDP Server
