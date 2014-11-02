@@ -128,7 +128,7 @@ Asuming that elastic search is located in the same folder as the CodeMon directo
   * $ ./../elasticsearch-1.3.4/bin/elasticsearch
 
 * ##Database
-  * $ python data/__init__.py
+  * $ python data/\__init\__.py
 
 * ##Activate the API
   * $ python api.py
