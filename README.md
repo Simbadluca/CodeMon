@@ -114,26 +114,26 @@ It is wise to have one terminal window open for each component.
 First navigate to the project directory (/CodeMon/)
 
 * ##RabbitMQ
-  * >PATH=$PATH:/user/local/sbin
-  * >rabbitmq-server
+  * > PATH=$PATH:/user/local/sbin
+  * > rabbitmq-server
 
 * ##UDP Server
-  * >python UDPserver.py
+  * > python UDPserver.py
 
 * ##Message Listener
-  * >python messageListener.py
+  * > python messageListener.py
 
 * ##Elastic Search
 Asuming that elastic search is located in the same folder as the CodeMon directory
   * >./../elasticsearch-1.3.4/bin/elasticsearch
 
 * ##Database
-  * >python data/__init__.py
+  * > python data/__init__.py
 
 * ##Activate the API
-  * >python api.py
+  * > python api.py
 
 * ##Activate the Frontend
-  * >python frontend/app.py
+  * > python frontend/app.py
 
 	
