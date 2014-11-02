@@ -107,9 +107,33 @@ Set the name of the node and remove the comment:
 [nose](https://nose.readthedocs.org/en/latest/)
 
 
-###Running the project
+#Running the project
+In order for the project to run properly we must activate the following key components as listed.
+It is wise to have one terminal window open for each component.
 
-#Test
+First navigate to the project directory (/CodeMon/)
 
+##* RabbitMQ
+  * >PATH=$PATH:(user/local/sbin
+  * >rabbitmq-server
+
+##* UDP Server
+  * >python UDPserver.py
+
+##* Message Listener
+  * >python messageListener.py
+
+##* Elastic Search
+Asuming that elastic search is located in the same folder as the CodeMon directory
+  * >./../elasticsearch-1.3.4/bin/elasticsearch
+
+##* Database
+  * >python data/__init__.py
+
+##* Activate the API
+  * >python api.py
+
+##*Activate the Frontend
+  * >python frontend/app.py
 
 	
