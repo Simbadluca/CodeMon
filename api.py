@@ -85,6 +85,7 @@ RESTFUL SQL Lite
 # Get all Kodemon entries in database
 class AllSQL(restful.Resource):
     # GET
+    @crossdomain(origin='*')
     def get(self):
         foundKodemon = session.query(Kodemon).all()
 
@@ -126,6 +127,7 @@ RESTFUL Elastic Search
 # Get all Kodemon in elastic search
 class AllElasticSearch(restful.Resource):
     # GET
+    @crossdomain(origin='*')
     def get(self):
         res = es.search(index="kodemon", body={"query": {"match_all": {}}})
 
@@ -141,6 +143,7 @@ class AllElasticSearch(restful.Resource):
 # Get all Kodemon in elastic search filtered by function name
 class GetFunctionByNameElasticSearch(restful.Resource):
     # POST
+    @crossdomain(origin='*')
     def post(self):
         data = json.loads(request.data)
         func_name = data.get('func_name')
@@ -165,6 +168,7 @@ class GetFunctionByNameElasticSearch(restful.Resource):
 
 class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
     # POST
+    @crossdomain(origin='*')
     def post(self):
         data = json.loads(request.data)
         func_name = data.get('func_name')
@@ -196,6 +200,7 @@ class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
 
 class GetFunctonByNameAndTimeRangeElasticSearch(restful.Resource):
     # POST
+    @crossdomain(origin='*')
     def post(self):
         data = json.loads(request.data)
         func_name = data.get('func_name')
