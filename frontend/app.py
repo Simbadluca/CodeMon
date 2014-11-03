@@ -10,7 +10,7 @@ app = Flask(__name__)
 @app.route('/')
 def functions():
     url = 'http://localhost:5000/kodemon/es/all'
-    data = json.load(urllib.urlopen(url))["result"]
+    data = json.load(urllib.urlopen(url))
 
     # a dictionary that hold all information about the functions run
     # format: {filename: {function_name: [{}, {}]}}
