@@ -67,7 +67,11 @@ def test():
         filename = data[i]['filename']
         func_name = data[i]['func_name']
 
-        func_details = {'id':data[i]['id'], 'execution':data[i]['execution_time'], 'timestamp':data[i]['timestamp'], 'token':data[i]['token'], 'key':data[i]['key']}
+        func_details = {'id': data[i]['id'],
+                        'execution': data[i]['execution_time'],
+                        'timestamp': data[i]['timestamp'],
+                        'token': data[i]['token'],
+                        'key': data[i]['key']}
 
         # check if filename and function have already been added to dictionary
         if not filename in func_dict:
