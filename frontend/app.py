@@ -16,7 +16,7 @@ def home():
 @app.route('/functions/')
 @app.route('/functions')
 def functions():
-    url = 'http://localhost:5000/kodemon/all'
+    url = 'http://localhost:5000/kodemon/es/all'
     data = json.load(urllib.urlopen(url))["result"]
 
     # a dictionary that hold all information about the functions run
@@ -44,7 +44,7 @@ def functions():
 
 @app.route('/functions/<filename>-<func_name>')
 def function(filename, func_name):
-    url = 'http://localhost:5000/kodemon/fileandfunction'
+    url = 'http://localhost:5000/kodemon/es/fileandfunction'
     values = json.dumps({'filename': filename, 'func_name': func_name})
 
     req = urllib2.Request(url)
@@ -56,7 +56,7 @@ def function(filename, func_name):
 
 @app.route('/test')
 def test():
-    url = 'http://localhost:5000/kodemon/all'
+    url = 'http://localhost:5000/kodemon/sql/all'
     data = json.load(urllib.urlopen(url))["result"]
 
     # a dictionary that hold all information about the functions run

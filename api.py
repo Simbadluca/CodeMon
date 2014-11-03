@@ -23,6 +23,8 @@ api = restful.Api(app)
 # Set up elasticsearch connection
 es = Elasticsearch()
 
+
+# Format SQL query to list
 def kodemonToList(qr):
     result = []
 
@@ -37,42 +39,24 @@ def kodemonToList(qr):
 
     return result
 
-def formatResponce(sqlResponce):
 
-    text = '{ "result": [ '
-    for elem in sqlResponce:
-        text += elem.__str__()
-        text += ", "
+# Format ElasticSearch query to list
+def ElasticSearchToList(responce):
+    result = []
 
-    # Remove the last comma
-    text = text[:-2]
-    text += " ]}"
-
-    return text
-
-def formatElasticResponce(responce):
-
-    kode = []
+    print responce['hits']['total']
 
     for hit in responce['hits']['hits']:
-        kode.append( Kodemon(execution_time = hit["_source"]["execution_time"],
-                    timestamp = hit["_source"]["timestamp"],
-                    token = hit["_source"]["token"],
-                    key = hit["_source"]["key"],
-                    func_name = hit["_source"]["func_name"],
-                    filename = hit["_source"]["filename"]) )
-
-    result = '{"result": [ '
-
-
-    for i in range(0, len(kode)):
-        result += kode[i].__str__()
-        result += ', '
-
-    result = result[:-2]
-    result += ' ]}'
+        result.append({'id': hit["_source"]["id"],
+                       'execution_time': hit["_source"]["execution_time"],
+                       'timestamp': hit["_source"]["timestamp"],
+                       'token': hit["_source"]["token"],
+                       'key': hit["_source"]["key"],
+                       'func_name': hit["_source"]["func_name"],
+                       'filename': hit["_source"]["filename"]})
 
     return result
+
 
 # Checks if argument is epoch or datetime format and converts to
 # epoch if the format is datetime.
@@ -93,9 +77,25 @@ def formatTime(aTimeFormat):
     else:
         return aTimeFormat
 
+
 """
-RESTFUL
+RESTFUL SQL Lite
 """
+
+# Get all Kodemon entries in database
+class AllSQL(restful.Resource):
+    # GET
+    def get(self):
+        foundKodemon = session.query(Kodemon).all()
+
+        if not foundKodemon:
+            return abort(404)
+        else:
+            kodemonList = kodemonToList(foundKodemon)
+            jsonResponce = json.dumps(kodemonList)
+
+            return Response(jsonResponce, mimetype='application/json')
+
 
 class FileFunctionResource(restful.Resource):
     # POST
@@ -114,89 +114,38 @@ class FileFunctionResource(restful.Resource):
 
             return Response(jsonResponce, mimetype='application/json')
 
-api.add_resource(FileFunctionResource, '/kodemon/fileandfunction')
+
+api.add_resource(AllSQL, '/kodemon/sql/all')
+api.add_resource(FileFunctionResource, '/kodemon/sql/fileandfunction')
+
 
 """
-    Api calls to database
+RESTFUL Elastic Search
 """
-# Get all Kodemon entries in database
-@app.route("/kodemon/all")
-def getAllEntryes():
 
-    foundKodemon = session.query(Kodemon).all()
+# Get all Kodemon in elastic search
+class AllElasticSearch(restful.Resource):
+    # GET
+    def get(self):
+        res = es.search(index="kodemon", body={"query": {"match_all": {}}})
 
-    if not foundKodemon:
-        return abort(404)
-    else:
-        jsonResponce = formatResponce(foundKodemon)
+        if res['hits']['total'] > 0:
+            kodemonList = ElasticSearchToList(res)
+            jsonResponce = json.dumps(kodemonList)
 
-        return jsonResponce
-
-
-# Get all entries in data base filtered by function name
-@app.route("/kodemon/function/<func_name>")
-def getFuncByName(func_name):
-
-    foundKodemon = session.query(Kodemon).filter(Kodemon.func_name == func_name).all()
-
-    if not foundKodemon:
-        return abort(404)
-    else:
-        jsonResponce = formatResponce(foundKodemon)
-
-        return jsonResponce
+            return Response(jsonResponce, mimetype='application/json')
+        else:
+            abort(404)
 
 
-# Get all entries in database filtered by filename
-@app.route("/kodemon/file/<filename>")
-def getFuncByFilename(filename):
+# Get all Kodemon in elastic search filtered by function name
+class GetFunctionByNameElasticSearch(restful.Resource):
+    # POST
+    def post(self):
+        data = json.loads(request.data)
+        func_name = data.get('func_name')
 
-    foundKodemon = session.query(Kodemon).filter(Kodemon.filename == filename).all()
-
-    if not foundKodemon:
-        return abort(404)
-    else:
-        jsonResponce = formatResponce(foundKodemon)
-
-        return jsonResponce
-
-
-# Get all entries in database filtered by file and function name
-@app.route("/kodemon/<filename>/<func_name>")
-@crossdomain(origin='*')
-def getFuncByFileAndFuncName(filename, func_name):
-
-    foundKodemon = session.query(Kodemon).filter(Kodemon.func_name == func_name and Kodemon.filename == filename).all()
-
-    if not foundKodemon:
-        return abort(404)
-    else:
-        kodemonList = kodemonToList(foundKodemon)
-        jsonResponce = json.dumps(kodemonList)
-        return Response(jsonResponce, mimetype='application/json')
-
-"""
-    Api calls to elastic search
-"""
-# Get all Kodemon entries in elasticsearch
-@app.route("/kodemon/elastic/all")
-def getAllEntryesElastic():
-
-    res = es.search(index="kodemon", body={"query": {"match_all": {}}})
-
-    if res['hits']['total'] > 0:
-        responce = formatElasticResponce(res)
-
-        return responce
-    else:
-        abort(404)
-
-
-# Get all entries in data base filtered by function name
-@app.route("/kodemon/elastic/function/<func_name>")
-def getFuncByNameElastic(func_name):
-
-    res = es.search(index="kodemon",
+        res = es.search(index="kodemon",
                 body={
                     "query": {
                         "query_string": {
@@ -206,31 +155,60 @@ def getFuncByNameElastic(func_name):
                     }
                 })
 
-    if res['hits']['total'] > 0:
-        responce = formatElasticResponce(res)
+        if res['hits']['total'] > 0:
+            kodemonList = ElasticSearchToList(res)
+            jsonResponce = json.dumps(kodemonList)
 
-        return responce
-    else:
-        abort(404)
+            return Response(jsonResponce, mimetype='application/json')
+        else:
+            abort(404)
 
-# Get all entries in database filtered by filename
-# Get all entries in database filtered by file and function name
+class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
+    # POST
+    def post(self):
+        data = json.loads(request.data)
+        func_name = data.get('func_name')
+        filename = data.get('filename')
 
-# Time format: "2011.08.29-11:05:02"
-# Get all entries for a function in a given time range
-@app.route("/kodemon/elastic/function/<func_name>/<time_min>_<time_max>")
-def getFunctionByNameAndTimeRangeElastic(func_name, time_min, time_max):
+        res = es.search(index="kodemon",
+                body={
+                    "query": {
+                        "query_string": {
+                            "query": func_name,
+                            "default_field": "func_name"
+                        }
+                    },
+                    "query": {
+                        "query_string": {
+                            "query": filename,
+                            "default_field": "filename"
+                        }
+                    }
+                })
+        if res['hits']['total'] > 0:
+            kodemonList = ElasticSearchToList(res)
+            jsonResponce = json.dumps(kodemonList)
 
-    time_min = formatTime(time_min)
-    time_max = formatTime(time_max)
+            return Response(jsonResponce, mimetype='application/json')
+        else:
+            abort(404)
 
-    res = es.search(index="kodemon",
+
+class GetFunctonByNameAndTimeRangeElasticSearch(restful.Resource):
+    # POST
+    def post(self):
+        data = json.loads(request.data)
+        func_name = data.get('func_name')
+        startTime = data.get('start_time')
+        endTime = data.get('end_time')
+
+        res = es.search(index="kodemon",
                 body={
                     "query" : {
                         "range" : {
                             "timestamp" : {
-                                "from" : time_min,
-                                "to" : time_max
+                                "from" : startTime,
+                                "to" : endTime
                             }
                         }
                     },
@@ -241,13 +219,20 @@ def getFunctionByNameAndTimeRangeElastic(func_name, time_min, time_max):
                         }
                     }
                 })
+        if res['hits']['total'] > 0:
+            kodemonList = ElasticSearchToList(res)
+            jsonResponce = json.dumps(kodemonList)
 
-    if res['hits']['total'] > 0:
-        responce = formatElasticResponce(res)
+            return Response(jsonResponce, mimetype='application/json')
+        else:
+            abort(404)
 
-        return responce
-    else:
-        abort(404)
+
+api.add_resource(AllElasticSearch, '/kodemon/es/all')
+api.add_resource(GetFunctionByNameElasticSearch, '/kodemon/es/function')
+api.add_resource(GetFunctionsByFunctionNameAndFilenameElasticSearch, '/kodemon/es/fileandfunction')
+api.add_resource(GetFunctonByNameAndTimeRangeElasticSearch, '/kodemon/es/functionandtime')
+
 
 
 if __name__ == "__main__":
