@@ -3,11 +3,18 @@
 {% block content %}
     <div class="col-md-3">
         <ul class="list-group">
-            {% for dict in list %}
+            {% for filename in list %}
                 <li class="list-group-item">
-                    <a href="/functions/{{ dict['func_name'] }}">
-                        {{ dict['func_name'] }}
-                    </a>
+                    <h4>{{ filename }}</h4>
+                    <ul class="list-group">
+                        {% for func_name in list[filename] %}
+                        <li class="list-group-item">
+                            <a href="/functions/{{ filename }}-{{ func_name }}">
+                                {{ func_name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </li>
             {% endfor %}
         </ul>

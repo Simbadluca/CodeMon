@@ -1,5 +1,8 @@
 import time
-from flask import Flask, abort
+import json
+from flask import Flask, abort, request, Response
+from flask.ext import restful
+from crossdomdecorator import crossdomain
 
 from data.database import Session
 from data.models import Kodemon
@@ -15,9 +18,24 @@ session = Session()
 
 # Create an instance of Flask
 app = Flask(__name__)
+api = restful.Api(app)
 
 # Set up elasticsearch connection
 es = Elasticsearch()
+
+def kodemonToList(qr):
+    result = []
+
+    for i in range(0, len(qr)):
+        result.append({'id': qr[i].id,
+                       'execution_time': qr[i].execution_time,
+                       'timestamp': qr[i].timestamp,
+                       'token': qr[i].token,
+                       'key': qr[i].key,
+                       'func_name': qr[i].func_name,
+                       'filename': qr[i].filename})
+
+    return result
 
 def formatResponce(sqlResponce):
 
@@ -75,6 +93,28 @@ def formatTime(aTimeFormat):
     else:
         return aTimeFormat
 
+"""
+RESTFUL
+"""
+
+class FileFunctionResource(restful.Resource):
+    # POST
+    @crossdomain(origin='*')
+    def post(self):
+        data = json.loads(request.data)
+        func_name = data.get('func_name')
+        filename = data.get('filename')
+        foundKodemon = session.query(Kodemon).filter(Kodemon.func_name == func_name and Kodemon.filename == filename).all()
+
+        if not foundKodemon:
+            return abort(404)
+        else:
+            kodemonList = kodemonToList(foundKodemon)
+            jsonResponce = json.dumps(kodemonList)
+
+            return Response(jsonResponce, mimetype='application/json')
+
+api.add_resource(FileFunctionResource, '/kodemon/fileandfunction')
 
 """
     Api calls to database
@@ -123,6 +163,7 @@ def getFuncByFilename(filename):
 
 # Get all entries in database filtered by file and function name
 @app.route("/kodemon/<filename>/<func_name>")
+@crossdomain(origin='*')
 def getFuncByFileAndFuncName(filename, func_name):
 
     foundKodemon = session.query(Kodemon).filter(Kodemon.func_name == func_name and Kodemon.filename == filename).all()
@@ -130,9 +171,9 @@ def getFuncByFileAndFuncName(filename, func_name):
     if not foundKodemon:
         return abort(404)
     else:
-        jsonResponce = formatResponce(foundKodemon)
-
-        return jsonResponce
+        kodemonList = kodemonToList(foundKodemon)
+        jsonResponce = json.dumps(kodemonList)
+        return Response(jsonResponce, mimetype='application/json')
 
 """
     Api calls to elastic search
