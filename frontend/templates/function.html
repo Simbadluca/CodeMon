@@ -1,14 +1,14 @@
 {% extends "layout.html" %}
 {% block title %}
-    <div class="row">
-        <div class="col-md-4">
-            <h1>Function details</h1>
-        </div>
-        <div class="col-md-8">
-            <blockquote class="col-md-12 pull-right">
-                <p>File: {{ list[0]['filename'] }}</p>
-                <p>Function: {{ list[0]['func_name'] }}</p>
-            </blockquote>
+    <div class="col-md-12">
+        <div class="page-header">
+            <h2>
+                Function details
+                <small>
+                    {{ list[0]['filename'] }}/{{ list[0]['func_name'] }}
+                </small>
+            </h2>
+
         </div>
     </div>
 {% endblock %}
@@ -39,9 +39,12 @@
     </div>
 
     <div id="js" class="col-md-12" data-file="{{ list[0]['filename'] }}" data-function="{{ list[0]['func_name'] }}">
-        <div id="container"></div>
+        <div class="well">
+            <div id="container"></div>
+        </div>
     </div>
     <script src="{{ url_for('static', filename='js/highcharts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dark-unica.js') }}"></script>
     <script src="{{ url_for('static', filename='js/exporting.js') }}"></script>
     <script src="{{ url_for('static', filename='js/function_details.js') }}"></script>
 {% endblock %}

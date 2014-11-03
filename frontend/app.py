@@ -1,20 +1,13 @@
 import json
-#import util
 import urllib
 import urllib2
 from flask import Flask, render_template
-import requests
+from datetime import date
 
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    welcome = "Hello World"
-    return render_template("home.html", welcome=welcome)
-
-@app.route('/functions/')
-@app.route('/functions')
+@app.route('/')
 def functions():
     url = 'http://localhost:5000/kodemon/es/all'
     data = json.load(urllib.urlopen(url))["result"]
@@ -27,7 +20,11 @@ def functions():
         filename = data[i]['filename']
         func_name = data[i]['func_name']
 
-        run_details = {'id':data[i]['id'], 'execution':data[i]['execution_time'], 'timestamp':data[i]['timestamp'], 'token':data[i]['token'], 'key':data[i]['key']}
+        run_details = {'id': data[i]['id'],
+                       'execution': data[i]['execution_time'],
+                       'timestamp': data[i]['timestamp'],
+                       'token': data[i]['token'],
+                       'key': data[i]['key']}
 
         # check if filename and function have already been added to dictionary
         if not filename in func_dict:
