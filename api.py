@@ -198,12 +198,13 @@ class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
             abort(404)
 
 
-class GetFunctonByNameAndTimeRangeElasticSearch(restful.Resource):
+class GetFunctonByNameFileAndTimeRangeElasticSearch(restful.Resource):
     # POST
     @crossdomain(origin='*')
     def post(self):
         data = json.loads(request.data)
         func_name = data.get('func_name')
+        filename = data.get('filename')
         startTime = data.get('start_time')
         endTime = data.get('end_time')
 
@@ -222,6 +223,12 @@ class GetFunctonByNameAndTimeRangeElasticSearch(restful.Resource):
                             "query": func_name,
                             "default_field": "func_name"
                         }
+                    },
+                    "query": {
+                        "query_string": {
+                            "query": filename,
+                            "default_field": "filename"
+                        }
                     }
                 })
         if res['hits']['total'] > 0:
@@ -236,7 +243,7 @@ class GetFunctonByNameAndTimeRangeElasticSearch(restful.Resource):
 api.add_resource(AllElasticSearch, '/kodemon/es/all')
 api.add_resource(GetFunctionByNameElasticSearch, '/kodemon/es/function')
 api.add_resource(GetFunctionsByFunctionNameAndFilenameElasticSearch, '/kodemon/es/fileandfunction')
-api.add_resource(GetFunctonByNameAndTimeRangeElasticSearch, '/kodemon/es/functionandtime')
+api.add_resource(GetFunctonByNameFileAndTimeRangeElasticSearch, '/kodemon/es/functionandtime')
 
 
 
