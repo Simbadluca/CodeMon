@@ -10,7 +10,7 @@ var getFuncData = function(url, dataObject){
 };
 
 var getAllData = function(filename, functionName){
-    var url = 'http://localhost:5000/kodemon/es/fileandfunction';
+    var url = 'http://localhost:5000/kodemon/sql/fileandfunction';
     var dataObject = {filename:filename, func_name:functionName};
     return getFuncData(url, dataObject);
 };

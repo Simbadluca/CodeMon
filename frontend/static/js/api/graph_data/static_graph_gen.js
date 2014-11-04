@@ -1,4 +1,10 @@
-var generateGraph = function(){
+var generateStaticGraph = function(filename, functionName){
+    var apiData = getAllData(filename, functionName);
+
+    apiData.success(function(data){
+        setupData(data, filename, functionName);
+    });
+
     Highcharts.setOptions({
         global: {
             useUTC: false
@@ -20,26 +26,6 @@ var generateGraph = function(){
             marginRight: 10,
             events: {
                 load: function () {
-
-                    var series = this.series[0];
-                    var xAxis = this.xAxis;
-                    $('#right-button').click(function(){
-                        incrementIndex();
-
-                        var x = graphData.categories[graphData.maxIndex],
-                            y = graphData.values[graphData.maxIndex];
-                        xAxis.categories = graphData.categories.slice(graphData.index, graphData.maxIndex);
-                        console.log('x: ' + x);
-                        console.log('y: ' + y);
-
-                        series.addPoint([x, y], true, true);
-                    });
-
-                    $('#left-button').click(function () {
-                        if (series.data.length) {
-                            series.data[series.data.length - 1].remove();
-                        }
-                    });
                 }
             }
         },
