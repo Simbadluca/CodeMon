@@ -8,6 +8,7 @@ from data.database import Session
 from data.models import Kodemon
 
 from elasticsearch import Elasticsearch
+from flask.ext.restful.utils import cors
 
 """
 Flask server runs default on port: 5000
@@ -19,6 +20,7 @@ session = Session()
 # Create an instance of Flask
 app = Flask(__name__)
 api = restful.Api(app)
+api.decorators = [cors.crossdomain(origin='*', headers=['accept', 'Content-Type'])]
 
 # Set up elasticsearch connection
 es = Elasticsearch()
@@ -85,7 +87,6 @@ RESTFUL SQL Lite
 # Get all Kodemon entries in database
 class AllSQL(restful.Resource):
     # GET
-    @crossdomain(origin='*')
     def get(self):
         foundKodemon = session.query(Kodemon).all()
 
@@ -96,7 +97,6 @@ class AllSQL(restful.Resource):
             jsonResponce = json.dumps(kodemonList)
 
             return Response(jsonResponce, mimetype='application/json')
-
 
 class FileFunctionResource(restful.Resource):
     # POST
@@ -115,6 +115,8 @@ class FileFunctionResource(restful.Resource):
 
             return Response(jsonResponce, mimetype='application/json')
 
+    def options(self):
+        pass
 
 api.add_resource(AllSQL, '/kodemon/sql/all')
 api.add_resource(FileFunctionResource, '/kodemon/sql/fileandfunction')
@@ -127,7 +129,6 @@ RESTFUL Elastic Search
 # Get all Kodemon in elastic search
 class AllElasticSearch(restful.Resource):
     # GET
-    @crossdomain(origin='*')
     def get(self):
         res = es.search(index="kodemon", body={"query": {"match_all": {}}})
 
@@ -139,11 +140,16 @@ class AllElasticSearch(restful.Resource):
         else:
             abort(404)
 
+    def options(self):
+        pass
 
 # Get all Kodemon in elastic search filtered by function name
 class GetFunctionByNameElasticSearch(restful.Resource):
+    support_cors = True
+    cors_origin = '*'
+    cors_headers = 'origin, content-type, x-request-with'
+
     # POST
-    @crossdomain(origin='*')
     def post(self):
         data = json.loads(request.data)
         func_name = data.get('func_name')
@@ -166,9 +172,13 @@ class GetFunctionByNameElasticSearch(restful.Resource):
         else:
             abort(404)
 
+    def options(self):
+        return {'Allow' : 'PUT' }, 200, \
+        { 'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods' : 'PUT,GET,POST' }
+
 class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
     # POST
-    @crossdomain(origin='*')
     def post(self):
         data = json.loads(request.data)
         func_name = data.get('func_name')
@@ -197,10 +207,11 @@ class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
         else:
             abort(404)
 
+    def options(self):
+        pass
 
 class GetFunctonByNameAndTimeRangeElasticSearch(restful.Resource):
     # POST
-    @crossdomain(origin='*')
     def post(self):
         data = json.loads(request.data)
         func_name = data.get('func_name')
@@ -232,6 +243,8 @@ class GetFunctonByNameAndTimeRangeElasticSearch(restful.Resource):
         else:
             abort(404)
 
+    def options(self):
+        pass
 
 api.add_resource(AllElasticSearch, '/kodemon/es/all')
 api.add_resource(GetFunctionByNameElasticSearch, '/kodemon/es/function')

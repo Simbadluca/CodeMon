@@ -41,7 +41,7 @@ def functions():
 
 @app.route('/functions/<filename>-<func_name>')
 def function(filename, func_name):
-    url = 'http://localhost:5000/kodemon/es/fileandfunction'
+    url = 'http://localhost:5000/kodemon/sql/fileandfunction'
     values = json.dumps({'filename': filename, 'func_name': func_name})
 
     req = urllib2.Request(url)
