@@ -61,8 +61,11 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/highcharts.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/dark-unica.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/exporting.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/function_details.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api/highcharts/highcharts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api/highcharts/dark-unica.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api/highcharts/exporting.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api/graph_data/api_calls.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api/graph_data/static_graph_gen.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api/graph_data/button_control.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api/graph_data/function_details.js') }}"></script>
 {% endblock %}

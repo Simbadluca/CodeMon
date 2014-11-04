@@ -233,7 +233,7 @@ class GetFunctonByNameFileAndTimeRangeElasticSearch(restful.Resource):
                             "default_field": "filename"
                         }
                     },
-                                        "query" : {
+                    "query" : {
                         "range" : {
                             "timestamp" : {
                                 "from" : startTime,
