@@ -221,14 +221,6 @@ class GetFunctonByNameFileAndTimeRangeElasticSearch(restful.Resource):
 
         res = es.search(index="kodemon",
                 body={
-                    "query" : {
-                        "range" : {
-                            "timestamp" : {
-                                "from" : startTime,
-                                "to" : endTime
-                            }
-                        }
-                    },
                     "query": {
                         "query_string": {
                             "query": func_name,
@@ -239,6 +231,14 @@ class GetFunctonByNameFileAndTimeRangeElasticSearch(restful.Resource):
                         "query_string": {
                             "query": filename,
                             "default_field": "filename"
+                        }
+                    },
+                                        "query" : {
+                        "range" : {
+                            "timestamp" : {
+                                "from" : startTime,
+                                "to" : endTime
+                            }
                         }
                     }
                 })
