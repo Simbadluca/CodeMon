@@ -16,10 +16,10 @@ var getAllData = function(filename, functionName){
 };
 
 var getDataByRange = function(filename, functionName, start_time, end_time){
-    var url = 'localhost:5000/kodemon/es/functionandtime';
+    var url = 'http://localhost:5000/kodemon/sql/functionandtime';
     var dataObject = {
         filename:filename,
-        functionName:functionName,
+        func_name:functionName,
         start_time:start_time,
         end_time:end_time
     };

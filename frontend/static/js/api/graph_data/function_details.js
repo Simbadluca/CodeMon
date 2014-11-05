@@ -3,17 +3,14 @@ var run = function(){
     var domData      = $('#js').data();
     var filename     = domData.file;
     var functionName = domData.function;
+    var minTimestamp = domData.min;
+    var maxTimestamp = domData.max;
 
-    //query the api for the function details
-    //var ajax = getFuncData(filename, functionName);
-    //var ajax = getAllData(filename, functionName);
+    var buttonfunctions = buttons();
 
-    /*ajax.success(function(apiData){
-        setData(apiData);
-    });*/
+    var staticGraph = generateStaticGraph(filename, functionName);
+    var rangeGraph = generateRangeGraph(filename, functionName, minTimestamp, maxTimestamp);
 
-    var graph = generateStaticGraph(filename, functionName);
-    var buttonsfunction = buttons();
 };
 
 $(document).ready(run());

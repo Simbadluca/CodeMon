@@ -13,7 +13,11 @@
     </div>
 {% endblock %}
 {% block content %}
-    <meta id="js" data-file="{{ list[0]['filename'] }}" data-function="{{ list[0]['func_name'] }}">
+    <meta id="js"
+          data-file="{{ list[0]['filename'] }}"
+          data-function="{{ list[0]['func_name'] }}"
+          data-min="{{ list[0]['timestamp'] }}"
+          data-max="{{ list[list|length - 1]['timestamp'] }}">
     <div class="col-md-12">
         <a id="table-button" class="btn btn-primary btn-xs btn-block">View Table</a>
     </div>
@@ -43,7 +47,7 @@
     </div>
 
     <div class="col-md-12">
-        <a id="graph-button" class="btn btn-primary btn-xs btn-block">View Static Graph</a>
+        <a id="static-graph-button" class="btn btn-primary btn-xs btn-block">View Static Graph</a>
     </div>
     <div id="static-graph" class="col-md-12">
         <div class="well well-sm">
@@ -52,14 +56,29 @@
     </div>
 
     <div class="col-md-12">
-        <a id="graph-button" class="btn btn-primary btn-xs btn-block">View Range Graph</a>
+        <a id="range-graph-button" class="btn btn-primary btn-xs btn-block">View Range Graph</a>
     </div>
 
-    <div class="col-md-12">
-        <div id="range-graph" class="well well-sm">
-            <div id="range-graphcontainer"></div>
+    <div id="range-graph" class="col-md-12">
+        <div class="well well-sm">
+            <div><div id="range-graphcontainer"></div></div>
         </div>
+
+        <div class="form-group col-md-12">
+            <label class="control-label col-md-12">Update graph with new range values</label>
+            <div class="col-md-6">
+                <input id="start-textbox" type="text" class="form-control" placeholder="Range start">
+            </div>
+            <div class="col-md-6">
+                <input id="end-textbox" type="text" class="form-control" placeholder="Range end">
+            </div>
+            <div class="col-md-12">
+                <button id="graph-reset" class="btn btn-primary btn-block" type="button">Reset Graph</button>
+            </div>
+        </div>
+
     </div>
+
 
     <script src="{{ url_for('static', filename='js/api/highcharts/highcharts.js') }}"></script>
     <script src="{{ url_for('static', filename='js/api/highcharts/dark-unica.js') }}"></script>
@@ -67,6 +86,7 @@
     <script src="{{ url_for('static', filename='js/api/graph_data/api_calls.js') }}"></script>
     <script src="{{ url_for('static', filename='js/api/graph_data/data.js') }}"></script>
     <script src="{{ url_for('static', filename='js/api/graph_data/static_graph_gen.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api/graph_data/range_graph_gen.js') }}"></script>
     <script src="{{ url_for('static', filename='js/api/graph_data/button_control.js') }}"></script>
     <script src="{{ url_for('static', filename='js/api/graph_data/function_details.js') }}"></script>
 {% endblock %}

@@ -64,7 +64,6 @@ def ElasticSearchToList(responce):
 # epoch if the format is datetime.
 # returns 400 if the format is wrong
 def formatTime(aTimeFormat):
-
     try:
         int(aTimeFormat)
     except ValueError:
@@ -98,14 +97,15 @@ class AllSQL(restful.Resource):
 
             return Response(jsonResponce, mimetype='application/json')
 
+
 class FileFunctionResource(restful.Resource):
     # POST
-    @crossdomain(origin='*')
     def post(self):
         data = json.loads(request.data)
         func_name = data.get('func_name')
         filename = data.get('filename')
-        foundKodemon = session.query(Kodemon).filter(Kodemon.func_name == func_name and Kodemon.filename == filename).all()
+        foundKodemon = session.query(Kodemon).filter(
+            Kodemon.func_name == func_name and Kodemon.filename == filename).all()
 
         if not foundKodemon:
             return abort(404)
@@ -118,9 +118,38 @@ class FileFunctionResource(restful.Resource):
     def options(self):
         pass
 
+
+class GetFunctionByNameFileAndTimeRange(restful.Resource):
+    # POST
+    def post(self):
+        data = json.loads(request.data)
+        func_name = data.get('func_name')
+        filename = data.get('filename')
+        startTime = data.get('start_time')
+        endTime = data.get('end_time')
+
+        sql = session.query(Kodemon) \
+            .filter(
+            Kodemon.func_name == func_name and
+            Kodemon.filename == filename) \
+            .filter(
+            Kodemon.timestamp.between(startTime, endTime)
+        ).all()
+
+        if not sql:
+            return abort(404)
+        else:
+            kodemonList = kodemonToList(sql)
+            jsonResponse = json.dumps(kodemonList)
+            return Response(jsonResponse, mimetype='application/json')
+
+    def options(self):
+        pass
+
+
 api.add_resource(AllSQL, '/kodemon/sql/all')
 api.add_resource(FileFunctionResource, '/kodemon/sql/fileandfunction')
-
+api.add_resource(GetFunctionByNameFileAndTimeRange, '/kodemon/sql/functionandtime')
 
 """
 RESTFUL Elastic Search
@@ -143,6 +172,7 @@ class AllElasticSearch(restful.Resource):
     def options(self):
         pass
 
+
 # Get all Kodemon in elastic search filtered by function name
 class GetFunctionByNameElasticSearch(restful.Resource):
     support_cors = True
@@ -155,14 +185,14 @@ class GetFunctionByNameElasticSearch(restful.Resource):
         func_name = data.get('func_name')
 
         res = es.search(index="kodemon",
-                body={
-                    "query": {
-                        "query_string": {
-                            "query": func_name,
-                            "default_field": "func_name"
-                        }
-                    }
-                })
+                        body={
+                            "query": {
+                                "query_string": {
+                                    "query": func_name,
+                                    "default_field": "func_name"
+                                }
+                            }
+                        })
 
         if res['hits']['total'] > 0:
             kodemonList = ElasticSearchToList(res)
@@ -173,9 +203,10 @@ class GetFunctionByNameElasticSearch(restful.Resource):
             abort(404)
 
     def options(self):
-        return {'Allow' : 'PUT' }, 200, \
-        { 'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods' : 'PUT,GET,POST' }
+        return {'Allow': 'PUT'}, 200, \
+               {'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'PUT,GET,POST'}
+
 
 class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
     # POST
@@ -185,20 +216,20 @@ class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
         filename = data.get('filename')
 
         res = es.search(index="kodemon",
-                body={
-                    "query": {
-                        "query_string": {
-                            "query": func_name,
-                            "default_field": "func_name"
-                        }
-                    },
-                    "query": {
-                        "query_string": {
-                            "query": filename,
-                            "default_field": "filename"
-                        }
-                    }
-                })
+                        body={
+                            "query": {
+                                "query_string": {
+                                    "query": func_name,
+                                    "default_field": "func_name"
+                                }
+                            },
+                            "query": {
+                                "query_string": {
+                                    "query": filename,
+                                    "default_field": "filename"
+                                }
+                            }
+                        })
         if res['hits']['total'] > 0:
             kodemonList = ElasticSearchToList(res)
             jsonResponce = json.dumps(kodemonList)
@@ -210,7 +241,8 @@ class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
     def options(self):
         pass
 
-class GetFunctonByNameFileAndTimeRangeElasticSearch(restful.Resource):
+
+class GetFunctionByNameFileAndTimeRangeElasticSearch(restful.Resource):
     # POST
     def post(self):
         data = json.loads(request.data)
@@ -220,28 +252,28 @@ class GetFunctonByNameFileAndTimeRangeElasticSearch(restful.Resource):
         endTime = data.get('end_time')
 
         res = es.search(index="kodemon",
-                body={
-                    "query": {
-                        "query_string": {
-                            "query": func_name,
-                            "default_field": "func_name"
-                        }
-                    },
-                    "query": {
-                        "query_string": {
-                            "query": filename,
-                            "default_field": "filename"
-                        }
-                    },
-                    "query" : {
-                        "range" : {
-                            "timestamp" : {
-                                "from" : startTime,
-                                "to" : endTime
+                        body={
+                            "query": {
+                                "query_string": {
+                                    "query": func_name,
+                                    "default_field": "func_name"
+                                }
+                            },
+                            "query": {
+                                "query_string": {
+                                    "query": filename,
+                                    "default_field": "filename"
+                                }
+                            },
+                            "query": {
+                                "range": {
+                                    "timestamp": {
+                                        "from": startTime,
+                                        "to": endTime
+                                    }
+                                }
                             }
-                        }
-                    }
-                })
+                        })
         if res['hits']['total'] > 0:
             kodemonList = ElasticSearchToList(res)
             jsonResponce = json.dumps(kodemonList)
@@ -253,12 +285,11 @@ class GetFunctonByNameFileAndTimeRangeElasticSearch(restful.Resource):
     def options(self):
         pass
 
+
 api.add_resource(AllElasticSearch, '/kodemon/es/all')
 api.add_resource(GetFunctionByNameElasticSearch, '/kodemon/es/function')
 api.add_resource(GetFunctionsByFunctionNameAndFilenameElasticSearch, '/kodemon/es/fileandfunction')
-api.add_resource(GetFunctonByNameFileAndTimeRangeElasticSearch, '/kodemon/es/functionandtime')
-
-
+api.add_resource(GetFunctionByNameFileAndTimeRangeElasticSearch, '/kodemon/es/functionandtime')
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def functions():
-    url = 'http://localhost:5000/kodemon/es/all'
+    url = 'http://localhost:5000/kodemon/sql/all'
     data = json.load(urllib.urlopen(url))
 
     # a dictionary that hold all information about the functions run
@@ -53,7 +53,7 @@ def function(filename, func_name):
 
 @app.route('/test')
 def test():
-    url = 'http://localhost:5000/kodemon/sql/all'
+    url = 'http://localhost:5000/kodemon/es/all'
     data = json.load(urllib.urlopen(url))["result"]
 
     # a dictionary that hold all information about the functions run

@@ -14,8 +14,11 @@ var setupData = function(inputData, filename, functionName){
     graphData.count = inputData.length;
 
     for(var i = 0; i < inputData.length; i++){
+        //setup the displayed time
         var datetime = new Date(inputData[i].timestamp * 1000);
-        graphData.categories.push(datetime);
+        var time = datetime.getHours() + ':' + datetime.getMinutes() + ':' + datetime.getSeconds();
+
+        graphData.categories.push(time);
         graphData.values.push(inputData[i].execution_time / 1000);
     }
 
@@ -23,6 +26,6 @@ var setupData = function(inputData, filename, functionName){
         graphData.maxIndex = 14;
     }
     else{
-        graphData.maxIndex = graphData.count - 1;
+        graphData.maxIndex = graphData.count;
     }
 };
