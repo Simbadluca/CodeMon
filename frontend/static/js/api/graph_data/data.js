@@ -1,14 +1,17 @@
-var graphData = {
-    count:         0,//length of the data array
-    index:         0,//the index of the first item displayed on graph
-    maxIndex:      0,//the index of the item displayed last plus one
-    values:       [],//the values displayed on the graph
-    categories:   [],//the categories displayed on the x-axis
-    filename:     "",
-    functionName: ""
-};
+var graphData = {};
 
 var setupData = function(inputData, filename, functionName){
+    graphData = {
+        count:         0,//length of the data array
+        index:         0,//the index of the first item displayed on graph
+        maxIndex:      0,//the index of the item displayed last plus one
+        values:       [],//the values displayed on the graph
+        categories:   [],//the categories displayed on the x-axis
+        filename:     "",
+        functionName: ""
+    };
+
+
     graphData.filename = filename;
     graphData.functionName = functionName;
     graphData.count = inputData.length;
@@ -22,10 +25,5 @@ var setupData = function(inputData, filename, functionName){
         graphData.values.push(inputData[i].execution_time / 1000);
     }
 
-    if(graphData.count > 15){
-        graphData.maxIndex = 14;
-    }
-    else{
-        graphData.maxIndex = graphData.count;
-    }
+    graphData.maxIndex = graphData.count;
 };

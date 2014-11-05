@@ -2,7 +2,6 @@ import time
 import json
 from flask import Flask, abort, request, Response
 from flask.ext import restful
-from crossdomdecorator import crossdomain
 
 from data.database import Session
 from data.models import Kodemon
@@ -30,6 +29,7 @@ es = Elasticsearch()
 def kodemonToList(qr):
     result = []
 
+    #for every row found in the query we construct a dictionary and add to the result list
     for i in range(0, len(qr)):
         result.append({'id': qr[i].id,
                        'execution_time': qr[i].execution_time,
@@ -97,20 +97,26 @@ class AllSQL(restful.Resource):
 
             return Response(jsonResponce, mimetype='application/json')
 
-
+# Find all data about a function given its name and file location
 class FileFunctionResource(restful.Resource):
     # POST
     def post(self):
+        # Retrieve the json data from client
         data = json.loads(request.data)
         func_name = data.get('func_name')
         filename = data.get('filename')
+
+        # Query the database
         foundKodemon = session.query(Kodemon).filter(
             Kodemon.func_name == func_name and Kodemon.filename == filename).all()
 
+        # If query returns nothing
         if not foundKodemon:
             return abort(404)
         else:
+            # Convert the query to a list of dictionaries
             kodemonList = kodemonToList(foundKodemon)
+            # And create a json object
             jsonResponce = json.dumps(kodemonList)
 
             return Response(jsonResponce, mimetype='application/json')
@@ -122,12 +128,14 @@ class FileFunctionResource(restful.Resource):
 class GetFunctionByNameFileAndTimeRange(restful.Resource):
     # POST
     def post(self):
+        # Retrieve the json data from client
         data = json.loads(request.data)
         func_name = data.get('func_name')
         filename = data.get('filename')
         startTime = data.get('start_time')
         endTime = data.get('end_time')
 
+        # Query the database
         sql = session.query(Kodemon) \
             .filter(
             Kodemon.func_name == func_name and
@@ -136,17 +144,20 @@ class GetFunctionByNameFileAndTimeRange(restful.Resource):
             Kodemon.timestamp.between(startTime, endTime)
         ).all()
 
+        # If query returns nothing
         if not sql:
             return abort(404)
         else:
+            # Convert the query to a list of dictionaries
             kodemonList = kodemonToList(sql)
+            # And create a json object
             jsonResponse = json.dumps(kodemonList)
             return Response(jsonResponse, mimetype='application/json')
 
     def options(self):
         pass
 
-
+# Add the sql functions to the api
 api.add_resource(AllSQL, '/kodemon/sql/all')
 api.add_resource(FileFunctionResource, '/kodemon/sql/fileandfunction')
 api.add_resource(GetFunctionByNameFileAndTimeRange, '/kodemon/sql/functionandtime')
@@ -181,6 +192,7 @@ class GetFunctionByNameElasticSearch(restful.Resource):
 
     # POST
     def post(self):
+        # Retrieve the json data from client
         data = json.loads(request.data)
         func_name = data.get('func_name')
 
@@ -211,6 +223,7 @@ class GetFunctionByNameElasticSearch(restful.Resource):
 class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
     # POST
     def post(self):
+        # Retrieve the json data from client
         data = json.loads(request.data)
         func_name = data.get('func_name')
         filename = data.get('filename')
@@ -245,6 +258,7 @@ class GetFunctionsByFunctionNameAndFilenameElasticSearch(restful.Resource):
 class GetFunctionByNameFileAndTimeRangeElasticSearch(restful.Resource):
     # POST
     def post(self):
+        # Retrieve the json data from client
         data = json.loads(request.data)
         func_name = data.get('func_name')
         filename = data.get('filename')

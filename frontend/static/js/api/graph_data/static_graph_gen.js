@@ -36,7 +36,7 @@ var generateStaticGraph = function(filename, functionName){
         },
         yAxis: {
             title: {
-                text: 'Value'
+                text: 'Time in seconds'
             },
             plotLines: [{
                 value: 0,
@@ -45,11 +45,7 @@ var generateStaticGraph = function(filename, functionName){
             }]
         },
         tooltip: {
-            formatter: function () {
-                return '<b>' + this.series.name + '</b><br/>' +
-                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                    Highcharts.numberFormat(this.y, 2);
-            }
+
         },
         legend: {
             enabled: false
